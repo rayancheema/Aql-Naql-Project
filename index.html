@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aql & Naql | Islamic Studies Y12 Presentation</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Scheherazade New (Arabic), Amiri, and Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Scheherazade+New:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            950: '#021e17',
+                            900: '#062d23',
+                            800: '#0b4738',
+                            700: '#115e4a',
+                            400: '#34d399',
+                        },
+                        gold: {
+                            100: '#fffbeb',
+                            300: '#fde047',
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                            700: '#a16207',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        arabic: ['Scheherazade New', 'Amiri', 'serif'],
+                        amiri: ['Amiri', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Islamic Aesthetics & Micro-Animations */
+        body {
+            background-color: #021e17;
+            color: #f3f4f6;
+            overflow: hidden;
+        }
+
+        /* Geometric Background Pattern */
+        .islamic-bg {
+            background-image: radial-gradient(#ca8a04 0.75px, transparent 0.75px), radial-gradient(#ca8a04 0.75px, #021e17 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            opacity: 0.07;
+        }
+
+        /* Glowing text effect for Arabic Ayat */
+        .glow-gold {
+            text-shadow: 0 0 15px rgba(234, 179, 8, 0.35), 0 0 30px rgba(234, 179, 8, 0.15);
+        }
+        
+        .glow-emerald {
+            text-shadow: 0 0 15px rgba(52, 211, 153, 0.4);
+        }
+
+        /* Gold Glassmorphism Cards */
+        .gold-card {
+            background: linear-gradient(135deg, rgba(11, 71, 56, 0.6) 0%, rgba(6, 45, 35, 0.8) 100%);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(234, 179, 8, 0.25);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(254, 240, 138, 0.2);
+        }
+
+        .gold-card:hover {
+            border-color: rgba(234, 179, 8, 0.5);
+            box-shadow: 0 15px 35px -10px rgba(234, 179, 8, 0.15);
+        }
+
+        /* Canvas Particle Animation Layer */
+        #particleCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Slide Transition System */
+        .slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.96) translateY(20px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 2;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+            z-index: 3;
+        }
+
+        .slide.exit-left {
+            opacity: 0;
+            transform: scale(0.96) translateX(-100px);
+        }
+
+        /* Audio Wave Pulse Animation */
+        @keyframes soundWave {
+            0%, 100% { height: 6px; }
+            50% { height: 18px; }
+        }
+
+        .wave-bar {
+            width: 3px;
+            background-color: #facc15;
+            border-radius: 3px;
+            display: inline-block;
+            animation: soundWave 1.2s ease-in-out infinite;
+        }
+
+        .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.1s; }
+
+        /* Custom Scrollbar for inner slide content */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(2, 30, 23, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(202, 138, 4, 0.4);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(234, 179, 8, 0.7);
+        }
+    </style>
+</head>
+<body class="h-full font-sans antialiased select-none text-slate-100 flex flex-col justify-between relative">
+
+    <!-- Ambient Geometric Pattern -->
+    <div class="islamic-bg absolute inset-0 pointer-events-none"></div>
+
+    <!-- Interactive Particle Overlay Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- TOP HEADER / BRANDING BAR -->
+    <header class="relative z-20 px-6 py-4 flex items-center justify-between border-b border-gold-500/20 bg-emerald-950/80 backdrop-blur-md">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full border border-gold-400/40 flex items-center justify-center bg-emerald-900/50 text-gold-400">
+                <i class="fa-solid fa-kaaba text-lg"></i>
+            </div>
+            <div>
+                <h1 class="text-sm md:text-base font-bold tracking-wider text-gold-400 uppercase">Year 12 Islamic Studies</h1>
+                <p class="text-xs text-emerald-400/80 font-medium">Project Presentation • Term 1</p>
+            </div>
+        </div>
+
+        <!-- Slide Number Indicator -->
+        <div class="flex items-center space-x-4">
+            <button id="mindmapToggleBtn" onclick="toggleMindMapModal()" class="px-3 py-1.5 rounded-lg border border-gold-500/30 bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 text-xs font-semibold flex items-center gap-2 transition">
+                <i class="fa-solid fa-sitemap"></i>
+                <span class="hidden sm:inline">Mind Map View</span>
+            </button>
+            <div class="text-xs font-mono bg-emerald-900/60 px-3 py-1.5 rounded-full border border-emerald-700/50 text-emerald-300">
+                Slide <span id="currentSlideNum" class="text-gold-400 font-bold text-sm">1</span> / <span id="totalSlidesNum">5</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN SLIDE CONTAINER -->
+    <main class="relative flex-1 z-10 overflow-hidden flex items-center justify-center p-4 md:p-8">
+
+        <!-- ==================== SLIDE 1: BISMILLAH & TITLE ==================== -->
+        <section class="slide active flex flex-col items-center justify-center text-center max-w-5xl mx-auto w-full h-full" id="slide-1">
+            <div class="gold-card p-8 md:p-12 rounded-3xl w-full relative overflow-hidden flex flex-col items-center justify-center min-h-[70vh]">
+                <!-- Corner Islamic Ornaments -->
+                <div class="absolute top-4 left-4 text-gold-500/30 text-3xl"><i class="fa-solid fa-star-and-crescent"></i></div>
+                <div class="absolute top-4 right-4 text-gold-500/30 text-3xl"><i class="fa-solid fa-star-and-crescent"></i></div>
+                
+                <!-- Bismillah Calligraphy -->
+                <div class="mb-6">
+                    <p class="font-arabic text-3xl md:text-5xl text-gold-400 glow-gold leading-relaxed">
+                        بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+                    </p>
+                    <p class="text-xs tracking-widest uppercase text-emerald-300/70 mt-2 font-medium">In the Name of Allah, the Most Gracious, the Most Merciful</p>
+                </div>
+
+                <div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold-400 to-transparent my-4"></div>
+
+                <!-- Main Title -->
+                <h2 class="text-3xl md:text-6xl font-extrabold tracking-tight text-white mb-4 leading-tight">
+                    Harmony of <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-amber-500">Aql</span> & <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-emerald-400 to-teal-200">Naql</span>
+                </h2>
+                <p class="text-lg md:text-xl text-emerald-200/90 font-light max-w-2xl mb-8">
+                    An In-Depth Investigation into the Relationship Between Human Reason (<span class="font-arabic text-gold-300 text-xl">عَقْل</span>) & Divine Revelation (<span class="font-arabic text-emerald-300 text-xl">نَقْل</span>)
+                </p>
+
+                <!-- Sub-details badges -->
+                <div class="flex flex-wrap justify-center gap-3 text-xs md:text-sm font-medium">
+                    <span class="px-4 py-2 rounded-xl bg-emerald-900/80 border border-emerald-500/30 text-emerald-300 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-gold-400"></i> Y12 Islamic Project
+                    </span>
+                    <span class="px-4 py-2 rounded-xl bg-emerald-900/80 border border-emerald-500/30 text-emerald-300 flex items-center gap-2">
+                        <i class="fa-solid fa-book-quran text-gold-400"></i> Epistemology in Islam
+                    </span>
+                </div>
+
+                <!-- Call to action button -->
+                <button onclick="nextSlide()" class="mt-10 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-gold-500 to-amber-600 hover:from-gold-400 hover:to-amber-500 text-emerald-950 font-bold text-base tracking-wide shadow-lg shadow-gold-500/20 transform hover:-translate-y-0.5 transition flex items-center gap-3">
+                    <span>Begin Presentation</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 2: CORE DEFINITIONS & FOUNDATIONS ==================== -->
+        <section class="slide flex flex-col justify-center max-w-6xl mx-auto w-full h-full" id="slide-2">
+            <div class="text-center mb-6">
+                <span class="text-xs uppercase tracking-widest text-gold-400 font-bold bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/20">Foundational Principles</span>
+                <h2 class="text-2xl md:text-4xl font-bold text-white mt-2">Definitions & Core Framework</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Aql Card -->
+                <div class="gold-card p-6 rounded-2xl relative overflow-hidden group hover:border-gold-400/50 transition">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-400/30 flex items-center justify-center text-gold-400 text-2xl font-bold">
+                                🧠
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Al-'Aql <span class="font-arabic text-2xl text-gold-400 ml-2">العَقْل</span></h3>
+                                <p class="text-xs text-gold-400/80 uppercase tracking-wider font-semibold">Reason & Intellect</p>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="space-y-2.5 text-sm text-emerald-100/90 leading-relaxed">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-gold-400 mt-1"></i>
+                            <span><strong>Faculty of Discernment:</strong> God-given capability to think, reflect, synthesize logic, and observe creation.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-gold-400 mt-1"></i>
+                            <span><strong>Scope:</strong> Understands empirical observation, science, logic, and deduces the application of Shariah.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-gold-400 mt-1"></i>
+                            <span><strong>Role in Islam:</strong> Prerequisites for moral responsibility (<em>Takleef</em>).</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Naql Card -->
+                <div class="gold-card p-6 rounded-2xl relative overflow-hidden group hover:border-emerald-400/50 transition">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-400/30 flex items-center justify-center text-emerald-400 text-2xl font-bold">
+                                📖
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">An-Naql <span class="font-arabic text-2xl text-emerald-400 ml-2">النَّقْل</span></h3>
+                                <p class="text-xs text-emerald-400/80 uppercase tracking-wider font-semibold">Divine Revelation</p>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="space-y-2.5 text-sm text-emerald-100/90 leading-relaxed">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
+                            <span><strong>Transmitted Truth:</strong> Divine knowledge communicated by Allah (SWT) through Scriptures (Quran) and Prophet Muhammad ﷺ (Sunnah).</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
+                            <span><strong>Scope:</strong> Unseen realm (<em>Ghaib</em>), ultimate purpose, objective ethics, and divine legislation.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
+                            <span><strong>Role in Islam:</strong> Infallible guidance that anchors human reason.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Scholar Paradigm Box: Ibn Taymiyyah -->
+            <div class="gold-card p-6 rounded-2xl border-l-4 border-l-gold-400">
+                <div class="flex items-start gap-4">
+                    <div class="hidden sm:flex text-3xl text-gold-400">
+                        <i class="fa-solid fa-quote-left"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs uppercase tracking-widest text-gold-400 font-bold mb-1">Golden Rule of Harmony (Dar' Ta'arud)</h4>
+                        <p class="text-base text-slate-100 italic font-serif leading-relaxed">
+                            "Authentic revelation (<span class="text-emerald-300 font-semibold font-sans">An-Naql As-Sahih</span>) will never contradict sound explicit reason (<span class="text-gold-300 font-semibold font-sans">Al-'Aql As-Sarih</span>). If a perceived contradiction arises, either the revelation is unauthentic or the logic is flawed."
+                        </p>
+                        <p class="text-xs text-emerald-300/70 font-semibold mt-2">— Shaykh al-Islam Ibn Taymiyyah (<em>Dar' Ta'arud al-Aql wa al-Naql</em>)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 3: NAQL (DIVINE REVELATION) & AYAT ==================== -->
+        <section class="slide flex flex-col justify-center max-w-6xl mx-auto w-full h-full" id="slide-3">
+            <div class="text-center mb-6">
+                <span class="text-xs uppercase tracking-widest text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">The Light of Textual Evidence</span>
+                <h2 class="text-2xl md:text-4xl font-bold text-white mt-1">An-Naql (Divine Revelation)</h2>
+            </div>
+
+            <div class="space-y-5 overflow-y-auto max-h-[70vh] pr-2">
+                <!-- Ayah Card 1: Surah An-Nahl 16:44 -->
+                <div class="gold-card p-6 rounded-2xl relative">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3 border-b border-gold-500/20 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 rounded-lg bg-gold-500/20 text-gold-400 font-bold text-xs flex items-center justify-center border border-gold-500/30">16:44</span>
+                            <h3 class="font-bold text-white text-base">Surah An-Nahl (The Bee) — Verse 44</h3>
+                        </div>
+                        
+                        <!-- AUDIO RECITATION BUTTON 1 -->
+                        <div class="flex items-center gap-3">
+                            <audio id="audio-ayah-1" src="audio/audio1.mp3" preload="none"></audio>
+                            <button onclick="toggleAudio('audio-ayah-1', this)" class="px-4 py-2 rounded-xl bg-gold-500/20 hover:bg-gold-500/30 border border-gold-400/40 text-gold-300 text-xs font-semibold flex items-center gap-2.5 transition">
+                                <i class="fa-solid fa-play text-sm"></i>
+                                <span>Play Recitation</span>
+                                <div class="hidden audio-wave flex items-center gap-0.5 h-4 ml-1">
+                                    <span class="wave-bar"></span>
+                                    <span class="wave-bar"></span>
+                                    <span class="wave-bar"></span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Arabic Verse -->
+                    <p class="font-arabic text-2xl md:text-3xl text-right text-gold-300 leading-loose mb-3 glow-gold">
+                        وَأَنزَلْنَآ إِلَيْكَ ٱلذِّكْرَ لِتُبَيِّنَ لِلنَّاسِ مَا نُزِّلَ إِلَيْهِمْ وَلَعَلَّهُمْ يَتَفَكَّرُونَ
+                    </p>
+
+                    <!-- English Translation -->
+                    <p class="text-sm text-slate-200 italic bg-emerald-950/60 p-3.5 rounded-xl border border-emerald-800/40">
+                        "And We revealed to you the message [O Muhammad] that you may make clear to the people what was sent down to them and that they might give thought."
+                    </p>
+
+                    <div class="mt-3 flex items-center gap-2 text-xs text-emerald-300">
+                        <i class="fa-solid fa-lightbulb text-gold-400"></i>
+                        <span><strong>Key Takeaway:</strong> Revelation (<span class="font-sans">Naql</span>) is provided to trigger human reflection and intellectual pondering (<span class="font-sans">Tafakkur</span>).</span>
+                    </div>
+                </div>
+
+                <!-- Ayah Card 2: Surah Al-An'am 6:115 -->
+                <div class="gold-card p-6 rounded-2xl relative">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3 border-b border-gold-500/20 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center border border-emerald-500/30">6:115</span>
+                            <h3 class="font-bold text-white text-base">Surah Al-An'am (The Cattle) — Verse 115</h3>
+                        </div>
+
+                        <!-- AUDIO RECITATION BUTTON 2 -->
+                        <div class="flex items-center gap-3">
+                            <audio id="audio-ayah-2" src="audio/audio2.mp3" preload="none"></audio>
+                            <button onclick="toggleAudio('audio-ayah-2', this)" class="px-4 py-2 rounded-xl bg-gold-500/20 hover:bg-gold-500/30 border border-gold-400/40 text-gold-300 text-xs font-semibold flex items-center gap-2.5 transition">
+                                <i class="fa-solid fa-play text-sm"></i>
+                                <span>Play Recitation</span>
+                                <div class="hidden audio-wave flex items-center gap-0.5 h-4 ml-1">
+                                    <span class="wave-bar"></span>
+                                    <span class="wave-bar"></span>
+                                    <span class="wave-bar"></span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Arabic Verse -->
+                    <p class="font-arabic text-2xl md:text-3xl text-right text-gold-300 leading-loose mb-3 glow-gold">
+                        وَتَمَّتْ كَلِمَتُ رَبِّكَ صِدْقًۭا وَعَدْلًۭا ۚ لَّا مُبَدِّلَ لِكَلِمَـٰتِهِۦ ۚ وَهُوَ ٱلسَّمِيعُ ٱلْعَلِيمُ
+                    </p>
+
+                    <!-- English Translation -->
+                    <p class="text-sm text-slate-200 italic bg-emerald-950/60 p-3.5 rounded-xl border border-emerald-800/40">
+                        "And the word of your Lord has been fulfilled in truth and in justice. None can alter His words, and He is the Hearing, the Knowing."
+                    </p>
+
+                    <div class="mt-3 flex items-center gap-2 text-xs text-emerald-300">
+                        <i class="fa-solid fa-shield-halved text-gold-400"></i>
+                        <span><strong>Key Takeaway:</strong> Naql provides immutable truth (<span class="font-sans">Sidq</span>) and justice (<span class="font-sans">'Adl</span>) beyond changing human biases.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 4: AQL (REASON & REFLECTION) & AYAT ==================== -->
+        <section class="slide flex flex-col justify-center max-w-6xl mx-auto w-full h-full" id="slide-4">
+            <div class="text-center mb-5">
+                <span class="text-xs uppercase tracking-widest text-gold-400 font-bold bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/20">The Mandate of Reflection</span>
+                <h2 class="text-2xl md:text-4xl font-bold text-white mt-1">Al-'Aql (God-Given Reason)</h2>
+            </div>
+
+            <!-- Quranic Statistical Evidence Bar -->
+            <div class="grid grid-cols-3 gap-3 mb-5">
+                <div class="bg-emerald-900/60 p-3 rounded-xl border border-gold-500/30 text-center">
+                    <p class="text-2xl md:text-3xl font-extrabold text-gold-400 font-mono" data-target="49">0</p>
+                    <p class="text-[10px] md:text-xs text-emerald-200 uppercase tracking-wider font-semibold">Times 'Aql (<span class="font-arabic">عقل</span>) Mentioned</p>
+                </div>
+                <div class="bg-emerald-900/60 p-3 rounded-xl border border-gold-500/30 text-center">
+                    <p class="text-2xl md:text-3xl font-extrabold text-gold-400 font-mono" data-target="18">0</p>
+                    <p class="text-[10px] md:text-xs text-emerald-200 uppercase tracking-wider font-semibold">Times Tafakkur (<span class="font-arabic">تفكر</span>) Mentioned</p>
+                </div>
+                <div class="bg-emerald-900/60 p-3 rounded-xl border border-gold-500/30 text-center">
+                    <p class="text-2xl md:text-3xl font-extrabold text-gold-400 font-mono" data-target="750">0</p>
+                    <p class="text-[10px] md:text-xs text-emerald-200 uppercase tracking-wider font-semibold">Ayat Encouraging Science/Logic</p>
+                </div>
+            </div>
+
+            <!-- Verses Container -->
+            <div class="space-y-4 overflow-y-auto max-h-[55vh] pr-2">
+                <!-- Ayah 3: Surah Al-Baqarah 2:242 -->
+                <div class="gold-card p-5 rounded-2xl">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-gold-400">Surah Al-Baqarah (2:242)</span>
+                        
+                        <div class="flex items-center gap-2">
+                            <audio id="audio-ayah-3" src="audio/audio3.mp3" preload="none"></audio>
+                            <button onclick="toggleAudio('audio-ayah-3', this)" class="px-3 py-1.5 rounded-lg bg-gold-500/20 hover:bg-gold-500/30 text-gold-300 text-xs font-medium flex items-center gap-2 transition">
+                                <i class="fa-solid fa-play"></i> Recite
+                            </button>
+                        </div>
+                    </div>
+                    <p class="font-arabic text-xl text-right text-gold-300 mb-2">
+                        كَذَٰلِكَ يُبَيِّنُ ٱللَّهُ لَكُمْ ءَايَـٰتِهِۦ لَعَلَّكُمْ تَعْقِلُونَ
+                    </p>
+                    <p class="text-xs text-slate-200 italic">"Thus does Allah make clear to you His verses that you might use reason (Ta'qiloon)."</p>
+                </div>
+
+                <!-- Ayah 4: Surah Ali 'Imran 3:190-191 -->
+                <div class="gold-card p-5 rounded-2xl">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-gold-400">Surah Ali 'Imran (3:190-191)</span>
+                        
+                        <div class="flex items-center gap-2">
+                            <audio id="audio-ayah-4" src="audio/audio4.mp3" preload="none"></audio>
+                            <button onclick="toggleAudio('audio-ayah-4', this)" class="px-3 py-1.5 rounded-lg bg-gold-500/20 hover:bg-gold-500/30 text-gold-300 text-xs font-medium flex items-center gap-2 transition">
+                                <i class="fa-solid fa-play"></i> Recite
+                            </button>
+                        </div>
+                    </div>
+                    <p class="font-arabic text-xl text-right text-gold-300 mb-2">
+                        إِنَّ فِى خَلْقِ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضِ وَٱخْتِلَـٰفِ ٱلَّيْلِ وَٱلنَّهَارِ لَـَٔايَـٰتٍ لِّأُو۟لِى ٱلْأَلْبَـٰبِ
+                    </p>
+                    <p class="text-xs text-slate-200 italic">"Indeed, in the creation of the heavens and the earth and the alternation of the night and the day are signs for those of understanding..."</p>
+                </div>
+
+                <!-- Ayah 5: Surah Al-Mulk 67:10 -->
+                <div class="gold-card p-5 rounded-2xl border-l-4 border-l-red-500/60">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-red-400">Surah Al-Mulk (67:10) — The Warning</span>
+                        
+                        <div class="flex items-center gap-2">
+                            <audio id="audio-ayah-5" src="audio/audio5.mp3" preload="none"></audio>
+                            <button onclick="toggleAudio('audio-ayah-5', this)" class="px-3 py-1.5 rounded-lg bg-gold-500/20 hover:bg-gold-500/30 text-gold-300 text-xs font-medium flex items-center gap-2 transition">
+                                <i class="fa-solid fa-play"></i> Recite
+                            </button>
+                        </div>
+                    </div>
+                    <p class="font-arabic text-xl text-right text-gold-300 mb-2">
+                        وَقَالُوا۟ لَوْ كُنَّا نَسْمَعُ أَوْ نَعْقِلُ مَا كُنَّا فِىٓ أَصْحَـٰبِ ٱلسَّعِيرِ
+                    </p>
+                    <p class="text-xs text-slate-200 italic">"And they will say, 'If only we had been listening or reasoning (Na'qilu), we would not be among the companions of the Blaze.'"</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 5: SYNTHESIS, ANALOGY & CONCLUSION ==================== -->
+        <section class="slide flex flex-col justify-center max-w-6xl mx-auto w-full h-full" id="slide-5">
+            <div class="text-center mb-6">
+                <span class="text-xs uppercase tracking-widest text-gold-400 font-bold bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/20">The Perfect Harmony</span>
+                <h2 class="text-2xl md:text-4xl font-bold text-white mt-1">Synthesis & Conclusion</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Eye & Light Analogy Card -->
+                <div class="gold-card p-6 rounded-2xl relative">
+                    <div class="flex items-center gap-3 mb-3 text-gold-400">
+                        <i class="fa-solid fa-eye text-2xl"></i>
+                        <h3 class="font-bold text-lg text-white">The Eye & Light Analogy</h3>
+                    </div>
+                    <p class="text-sm text-slate-200 leading-relaxed mb-3">
+                        Imam Al-Ghazali explained: <strong>'Aql (Intellect) is like the Human Eye</strong>, and <strong>Naql (Revelation) is like Sun Light</strong>.
+                    </p>
+                    <div class="p-3 bg-emerald-950/80 rounded-xl border border-emerald-700/50 text-xs text-emerald-200 space-y-1.5">
+                        <p>• A healthy eye in pitch darkness cannot see anything.</p>
+                        <p>• Sunlight without an eye cannot produce vision.</p>
+                        <p class="text-gold-300 font-semibold">• True guidance occurs ONLY when the Eye ('Aql) receives Light (Naql)!</p>
+                    </div>
+                </div>
+
+                <!-- Golden Age Heritage Card -->
+                <div class="gold-card p-6 rounded-2xl relative">
+                    <div class="flex items-center gap-3 mb-3 text-emerald-400">
+                        <i class="fa-solid fa-flask text-2xl"></i>
+                        <h3 class="font-bold text-lg text-white">Islamic Golden Age Impact</h3>
+                    </div>
+                    <p class="text-sm text-slate-200 leading-relaxed mb-3">
+                        Muslim polymaths (Ibn Al-Haytham, Al-Biruni, Ibn Sina) were direct products of combining <strong>Naql</strong> (Quranic duty to study creation) with <strong>'Aql</strong> (empirical scientific method).
+                    </p>
+                    <div class="p-3 bg-emerald-950/80 rounded-xl border border-emerald-700/50 text-xs text-emerald-200">
+                        <p class="font-semibold text-gold-300 mb-1">Key Insight for Y12 Project:</p>
+                        <p>Islam never separated secular science from sacred theology; empirical discovery was viewed as an act of worship (Ibadah).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conclusion Banner -->
+            <div class="gold-card p-6 rounded-2xl text-center bg-gradient-to-r from-emerald-900/90 via-emerald-800/90 to-emerald-900/90">
+                <h4 class="text-lg font-bold text-gold-300 mb-2">Final Summary Takeaway</h4>
+                <p class="text-sm text-slate-100 max-w-3xl mx-auto leading-relaxed">
+                    Reason ('Aql) is our instrument to understand divine revelation, while Revelation (Naql) is our absolute compass that safeguards reason from moral corruption and intellectual arrogance. Together, they guide humanity toward truth in this life and success in the Hereafter.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER CONTROLS & PROGRESS BAR -->
+    <footer class="relative z-20 px-6 py-4 bg-emerald-950/90 border-t border-gold-500/20 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-4">
+        
+        <!-- Navigation Buttons -->
+        <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
+            <button onclick="prevSlide()" class="px-5 py-2.5 rounded-xl border border-gold-500/30 bg-emerald-900/60 hover:bg-gold-500/20 text-gold-300 font-semibold text-xs md:text-sm flex items-center gap-2 transition disabled:opacity-30" id="prevBtn">
+                <i class="fa-solid fa-chevron-left"></i>
+                <span>Previous</span>
+            </button>
+
+            <!-- Thumbnails Dots -->
+            <div class="flex items-center space-x-2" id="slideDotsContainer">
+                <!-- Injected via JS -->
+            </div>
+
+            <button onclick="nextSlide()" class="px-5 py-2.5 rounded-xl border border-gold-500/30 bg-gold-500/20 hover:bg-gold-500/30 text-gold-300 font-semibold text-xs md:text-sm flex items-center gap-2 transition" id="nextBtn">
+                <span>Next</span>
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Audio Setup Instruction Modal Launcher -->
+        
+    </footer>
+
+    <!-- SLIDE PROGRESS BAR -->
+    <div class="absolute top-0 left-0 h-1 bg-gradient-to-r from-gold-500 via-emerald-400 to-gold-400 z-30 transition-all duration-500" id="progressBar" style="width: 20%;"></div>
+
+    <!-- ==================== MIND MAP MODAL VIEW ==================== -->
+    <div id="mindMapModal" class="fixed inset-0 z-50 bg-emerald-950/95 backdrop-blur-xl flex flex-col p-6 hidden opacity-0 transition-opacity duration-300">
+        <div class="flex items-center justify-between border-b border-gold-500/20 pb-4 mb-6">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-sitemap text-gold-400 text-2xl"></i>
+                <h2 class="text-xl font-bold text-white">Presentation Visual Mind Map</h2>
+            </div>
+            <button onclick="toggleMindMapModal()" class="w-10 h-10 rounded-full bg-emerald-900 border border-gold-500/30 text-gold-400 flex items-center justify-center hover:bg-gold-500/20 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-auto flex items-center justify-center p-4">
+            <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="gold-card p-5 rounded-xl border border-gold-500/30">
+                    <h3 class="text-gold-400 font-bold mb-2">1. Foundations & Core Rule</h3>
+                    <p class="text-xs text-slate-300">Complementary light sources. Ibn Taymiyyah's rule: Sound reason ('Aql As-Sarih) never contradicts authentic revelation (Naql As-Sahih).</p>
+                </div>
+                <div class="gold-card p-5 rounded-xl border border-gold-500/30">
+                    <h3 class="text-emerald-400 font-bold mb-2">2. An-Naql (Revelation)</h3>
+                    <p class="text-xs text-slate-300">Infallible divine revelation (Quran & Sunnah). Establishes morality, worship, purpose. (Surah An-Nahl 16:44 & Al-An'am 6:115).</p>
+                </div>
+                <div class="gold-card p-5 rounded-xl border border-gold-500/30">
+                    <h3 class="text-gold-400 font-bold mb-2">3. Al-'Aql (Reason)</h3>
+                    <p class="text-xs text-slate-300">God-given faculty for logic, science, and reflection. Quran references reasoning 49+ times and Tafakkur 18+ times.</p>
+                </div>
+                <div class="gold-card p-5 rounded-xl border border-gold-500/30">
+                    <h3 class="text-emerald-400 font-bold mb-2">4. Synthesis & Golden Age</h3>
+                    <p class="text-xs text-slate-300">Al-Ghazali's Eye & Light analogy. Muslim scientists drove empirical innovations through Quranic obligation.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MP3 BINDING HELP MODAL ==================== -->
+    <div id="audioHelpModal" class="fixed inset-0 z-50 bg-emerald-950/95 backdrop-blur-xl flex items-center justify-center p-6 hidden opacity-0 transition-opacity duration-300">
+        <div class="gold-card max-w-lg w-full p-6 rounded-2xl relative">
+            <button onclick="toggleAudioHelpModal()" class="absolute top-4 right-4 text-emerald-400 hover:text-gold-300">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 class="text-lg font-bold text-gold-400 mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-music"></i> How to Attach Your Own MP3 Recitations
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                You can easily add audio recitations for each Quranic Ayah in this presentation!
+            </p>
+            <ol class="space-y-2 text-xs text-emerald-200 list-decimal list-inside mb-4 bg-emerald-950/80 p-4 rounded-xl border border-emerald-800">
+                <li>Place your <code class="text-gold-300">.mp3</code> audio files in the same folder as this HTML file.</li>
+                <li>Open this file in any text editor (Notepad, VS Code).</li>
+                <li>Search for <code class="text-gold-300">id="audio-ayah-1"</code> (or 2, 3, 4, 5).</li>
+                <li>Update the <code class="text-gold-300">src=""</code> attribute to your file name, e.g., <code class="text-gold-300">src="nahl44.mp3"</code>.</li>
+            </ol>
+            <p class="text-[11px] text-emerald-400/80 italic">Note: If no custom MP3 source is provided, clicking the play button will synthesize a fallback speech/tone placeholder!</p>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT SLIDE ENGINE & INTERACTIVE CONTROLS -->
+    <script>
+        // State variables
+        let currentSlide = 1;
+        const totalSlides = 5;
+        let isAudioPlaying = false;
+        let activeAudioElement = null;
+        let activeAudioButton = null;
+
+        // Initialize presentation elements
+        document.addEventListener('DOMContentLoaded', () => {
+            initDots();
+            updateSlideUI();
+            initParticles();
+            
+            // Keyboard Navigation Listener
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                } else if (e.key === 'Escape') {
+                    closeModals();
+                }
+            });
+
+            // Touch Swipe Handling for Mobile
+            let touchStartX = 0;
+            document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+            document.addEventListener('touchend', e => {
+                let touchEndX = e.changedTouches[0].screenX;
+                if (touchStartX - touchEndX > 50) nextSlide();
+                if (touchEndX - touchStartX > 50) prevSlide();
+            });
+        });
+
+        // Initialize Slide Navigation Dots
+        function initDots() {
+            const container = document.getElementById('slideDotsContainer');
+            container.innerHTML = '';
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === 1 ? 'bg-gold-400 w-6' : 'bg-emerald-800 hover:bg-emerald-600'}`;
+                dot.onclick = () => goToSlide(i);
+                dot.id = `dot-${i}`;
+                container.appendChild(dot);
+            }
+        }
+
+        // Slide Navigation Logic
+        function goToSlide(slideNum) {
+            if (slideNum < 1 || slideNum > totalSlides) return;
+            
+            // Pause any running audio
+            stopAllAudio();
+
+            const currentElem = document.getElementById(`slide-${currentSlide}`);
+            currentSlide = slideNum;
+            const nextElem = document.getElementById(`slide-${currentSlide}`);
+
+            document.querySelectorAll('.slide').forEach(s => {
+                s.classList.remove('active', 'exit-left');
+            });
+
+            nextElem.classList.add('active');
+            updateSlideUI();
+
+            // Trigger counter animations if on Slide 4
+            if (currentSlide === 4) {
+                animateCounters();
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        function updateSlideUI() {
+            document.getElementById('currentSlideNum').textContent = currentSlide;
+            document.getElementById('totalSlidesNum').textContent = totalSlides;
+
+            // Update progress bar
+            const percentage = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+
+            // Update Nav Buttons State
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // Update Dots
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (i === currentSlide) {
+                    dot.className = 'w-6 h-2.5 rounded-full bg-gold-400 transition-all duration-300';
+                } else {
+                    dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-800 hover:bg-emerald-600 transition-all duration-300';
+                }
+            }
+        }
+
+        // Audio Handler
+        function toggleAudio(audioId, btn) {
+            const audio = document.getElementById(audioId);
+
+            if (activeAudioElement && activeAudioElement !== audio) {
+                stopAllAudio();
+            }
+
+            if (audio.paused) {
+                // If src is empty, synthesize fallback tone/speech
+                if (!audio.src || audio.src === window.location.href) {
+                    playSyntheticFallback(btn);
+                    return;
+                }
+
+                audio.play().then(() => {
+                    setButtonPlayingState(btn, true);
+                    activeAudioElement = audio;
+                    activeAudioButton = btn;
+                }).catch(() => {
+                    playSyntheticFallback(btn);
+                });
+            } else {
+                audio.pause();
+                setButtonPlayingState(btn, false);
+                activeAudioElement = null;
+                activeAudioButton = null;
+            }
+
+            audio.onended = () => {
+                setButtonPlayingState(btn, false);
+                activeAudioElement = null;
+                activeAudioButton = null;
+            };
+        }
+
+        function stopAllAudio() {
+            if (activeAudioElement) {
+                activeAudioElement.pause();
+                activeAudioElement.currentTime = 0;
+            }
+            if (activeAudioButton) {
+                setButtonPlayingState(activeAudioButton, false);
+            }
+            activeAudioElement = null;
+            activeAudioButton = null;
+        }
+
+        function setButtonPlayingState(btn, isPlaying) {
+            const icon = btn.querySelector('i');
+            const wave = btn.querySelector('.audio-wave');
+            const label = btn.querySelector('span');
+
+            if (isPlaying) {
+                if(icon) icon.className = 'fa-solid fa-pause text-sm text-gold-400';
+                if(wave) wave.classList.remove('hidden');
+                if(label) label.textContent = 'Pause';
+            } else {
+                if(icon) icon.className = 'fa-solid fa-play text-sm';
+                if(wave) wave.classList.add('hidden');
+                if(label) label.textContent = 'Play Recitation';
+            }
+        }
+
+        // Speech Synthesis Fallback if user hasn't specified MP3 file
+        function playSyntheticFallback(btn) {
+            setButtonPlayingState(btn, true);
+            
+            // Play subtle web audio tone chime
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(432, audioCtx.currentTime); // Calming 432Hz tone
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.8);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 1.8);
+
+            setTimeout(() => {
+                setButtonPlayingState(btn, false);
+            }, 2000);
+        }
+
+        // Statistical Counter Animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('[data-target]');
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                let count = 0;
+                const speed = target / 30;
+
+                const updateCount = () => {
+                    count += speed;
+                    if (count < target) {
+                        counter.innerText = Math.ceil(count) + '+';
+                        setTimeout(updateCount, 40);
+                    } else {
+                        counter.innerText = target + '+';
+                    }
+                };
+                updateCount();
+            });
+        }
+
+        // Mind Map Modal Toggle
+        function toggleMindMapModal() {
+            const modal = document.getElementById('mindMapModal');
+            toggleModal(modal);
+        }
+
+        function toggleAudioHelpModal() {
+            const modal = document.getElementById('audioHelpModal');
+            toggleModal(modal);
+        }
+
+        function toggleModal(modal) {
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                setTimeout(() => modal.classList.remove('opacity-0'), 10);
+            } else {
+                modal.classList.add('opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        }
+
+        function closeModals() {
+            const m1 = document.getElementById('mindMapModal');
+            const m2 = document.getElementById('audioHelpModal');
+            if (!m1.classList.contains('hidden')) toggleModal(m1);
+            if (!m2.classList.contains('hidden')) toggleModal(m2);
+        }
+
+        // Interactive Particle Canvas (Floating atmospheric stars/particles)
+        function initParticles() {
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const particles = [];
+            const particleCount = 45;
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.8 + 0.5,
+                    color: Math.random() > 0.5 ? 'rgba(234, 179, 8, ' : 'rgba(52, 211, 153, ',
+                    alpha: Math.random() * 0.6 + 0.2,
+                    speedY: - (Math.random() * 0.4 + 0.1),
+                    speedX: (Math.random() - 0.5) * 0.2
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+
+                    if (p.y < 0) {
+                        p.y = canvas.height;
+                        p.x = Math.random() * canvas.width;
+                    }
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color + p.alpha + ')';
+                    ctx.fill();
+                });
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
