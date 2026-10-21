@@ -10,7 +10,7 @@
 
   An interactive, web-based presentation platform exploring the Islamic philosophical relationship between **Al-'Aql** (*Reason & Intellect*) and **An-Naql** (*Divine Revelation*). Built with modern UI design, audio player controls for Quranic recitations, fluid animations, and interactive learning tools.
 
-  [Live Demo](#) • [Features](#key-features) • [Project Structure](#project-structure) • [Audio Setup](#audio-configuration)
+  [Live Demo]([#](https://aql-naql.netlify.app/)) • [Features](#key-features) • [Project Structure](#project-structure) • [Audio Setup](#audio-configuration)
 
 </div>
 
